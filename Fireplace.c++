@@ -1,29 +1,22 @@
 // Fireplace.c++
 
-#include <iostream>
-#include <math.h>
+#include "Fireplace.h"
+
 #include "Cylinder.h"
 #include "RectangularPrism.h"
 #include "Wall.h"
-#include "Fireplace.h"
 
 static int fcount = 0;
-Fireplace::Fireplace(ShaderIF* sIF, float dx, float dy, float dz) :
-    shaderIF(sIF)
+Fireplace::Fireplace(ShaderIF* sIF, float dx, float dy, float dz)
+    : MyContainer(sIF)
 {
+    const int layers = 3;
+    const int count = 24*layers;
+    const float openRadius = 10;
+    const float dTheta = M_PI/(count/layers);
 
-    int layers = 3;
-    int count = 24*layers;
     vec3 cylinderCenters[count];
     float cylinderOrientation[count];
-
-
-    float openRadius = 10;
-
-
-
-    float dTheta = M_PI/(count/layers);
-
 
     float i = 0.0;
     for(int index = 0; index<count; i+=dTheta)
@@ -37,9 +30,9 @@ Fireplace::Fireplace(ShaderIF* sIF, float dx, float dy, float dz) :
         }
     }
 
-    for(int i = 0;i< count; i++)
+    for(int j = 0;j< count; j++)
     {
-        Cylinder* c = new Cylinder(sIF,2.5,2,    cylinderCenters[i][0],cylinderCenters[i][1],cylinderCenters[i][2], cylinderOrientation[i],0,0 );
+        Cylinder* c = new Cylinder(sIF,2.5,2,    cylinderCenters[j][0],cylinderCenters[j][1],cylinderCenters[j][2], cylinderOrientation[j],0,0 );
         c->setKa(0.05,0.05,0.05);
         c->setKd(0.3,0.15,0.2);
         addComponent( c );
@@ -48,7 +41,7 @@ Fireplace::Fireplace(ShaderIF* sIF, float dx, float dy, float dz) :
     //logs
     Cylinder* c1 = new Cylinder(sIF,5,1,    dx-4,dy,dz, 90,30,0 );
     Cylinder* c2 = new Cylinder(sIF,5.5,1.2,    dx-4.2,dy-0.1,dz+1.5, 90,-30,45 );
-    if( fcount++ %2 == 0)
+    if( fcount++ % 2 == 0)
     {
 
         c1->setKa(184.0/255,131.0/255,11.0/255);
@@ -75,21 +68,15 @@ Fireplace::Fireplace(ShaderIF* sIF, float dx, float dy, float dz) :
     RectangularPrism* backPanel = new RectangularPrism(sIF,1,20,27,dx+1.5,dy+10-3,dz);
     backPanel->setKa(0.7,0.05,0.05);
     backPanel->setKd(90.0/255,4.0/255,27/255);
-
-    //back wall
     addComponent( backPanel );
 
     RectangularPrism* chimney = new RectangularPrism(sIF,10,42,10,    dx+3.8,dy+26,dz);
     chimney->setKa(0.7,0.05,0.05);
     chimney->setKd(90.0/255,4.0/255,27/255);
-
-    //back wall
     addComponent( chimney );
 
     Wall* wall = new Wall(sIF,dx,dy,dz);
     wall->setKd(0.8,0.8,0.8);
     wall->setKd(1,1,1);
     addComponent( wall );
-
-
 }

@@ -3,27 +3,34 @@
 #ifndef CYLINDER_H
 #define CYLINDER_H
 
-#include <GL/gl.h>
-
 #include "ObjTypes/MyView.h"
-#include "ShaderIF.h"
-#include "AffPoint.h"
-#include "AffVector.h"
 
 class Cylinder : public MyView
 {
 public:
-    Cylinder(ShaderIF* sIF, double h, double r, double x, double y, double z, double thetaX, double thetaY,double thetaZ);
-    virtual ~Cylinder();
+    Cylinder
+    (
+        ShaderIF* sIF,
+        double h = 1,
+        double r = 1,
+        double x = 0,
+        double y = 0,
+        double z = 0,
+        double thetaX = 0,
+        double thetaY = 0,
+        double thetaZ = 0
+    );
+
+    ~Cylinder();
 
     // xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
     void getMCBoundingBox(double* xyzLimits) const;
     bool handleCommand(unsigned char anASCIIChar, double ldsX, double ldsY);
     void render();
+    virtual void rotate( const cryph::AffPoint& point, const cryph::AffVector& vector, float degrees ){}
 
 private:
     double minX,maxX,minY,maxY,minZ,maxZ;
-    ShaderIF* shaderIF;
     GLuint vao[1];
     GLuint vbo[2]; // 0: coordinates; 1: normal vectors
     GLuint ebo[2];
@@ -31,7 +38,6 @@ private:
     const cryph::AffPoint shift;
 
     cryph::AffVector topNormal;
-    cryph::AffVector botNormal;
 
     const double mScaleHeight;
     const double mScaleRadius;

@@ -4,10 +4,14 @@
 #define MyContainer_H
 
 #include "ModelView.h"
+#include "MyView.h"
 #include <GL/gl.h>
+#include "ShaderIF.h"
 
 #include <vector>
 #include <string.h>
+#include "AffVector.h"
+#include "AffPoint.h"
 
 
 //extend some basic functionallity across modelview collections
@@ -16,11 +20,12 @@ class MyContainer : public ModelView
 
 protected:
 	typedef float vec3[3];
-    std::vector<ModelView*> componentVector;
+    std::vector<MyView*> componentVector;
     double overallMCBoundingBox[6];
+	ShaderIF* shaderIF;
 
     //shamelessly taken from controller.c++
-    void addComponent(ModelView* m)
+    void addComponent(MyView* m)
     {
         componentVector.push_back(m);
 
@@ -63,7 +68,7 @@ public:
     {
         memcpy(xyzLimits, overallMCBoundingBox,6*sizeof(double));
     }
-    MyContainer(): componentVector()
+    MyContainer(ShaderIF* sIF): componentVector(), shaderIF(sIF)
     {
         overallMCBoundingBox[0] = overallMCBoundingBox[2] = overallMCBoundingBox[4] = 1.0;
         overallMCBoundingBox[1] = overallMCBoundingBox[3] = overallMCBoundingBox[5] = -1.0;
@@ -80,12 +85,20 @@ public:
 
     	return found;
     }
+
     ~MyContainer()
     {
         for( auto it = componentVector.begin(); it != componentVector.end(); ++it) {
             delete *it;
         }
     }
+
+	void rotate( const cryph::AffPoint& point, const cryph::AffVector& vector, float degrees )
+	{
+		for( auto it = componentVector.begin(); it != componentVector.end(); ++it) {
+			(*it)->rotate(point,vector,degrees);
+		}
+	}
 };
 
 #endif

@@ -1,8 +1,4 @@
 // Cylinder.c++
-
-#include <iostream>
-#include <math.h>
-
 #include "Cylinder.h"
 
 #include "Matrix3x3.h"
@@ -12,7 +8,14 @@ GLuint Cylinder::indices[2][20] ={
     {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,2}
 };
 
-Cylinder::Cylinder(ShaderIF* sIF, double h, double r, double x, double y, double z, double thetaX, double thetaY,double thetaZ) : shaderIF(sIF), mScaleHeight(h), mScaleRadius(r),shift(x,y,z), mRotateX(thetaX),mRotateY(thetaY),mRotateZ(thetaZ)
+Cylinder::Cylinder(ShaderIF* sIF, double h, double r, double x, double y, double z, double thetaX, double thetaY,double thetaZ)
+    : MyView(sIF)
+    , mScaleHeight(h)
+    , mScaleRadius(r)
+    , shift(x,y,z)
+    , mRotateX(thetaX)
+    , mRotateY(thetaY)
+    , mRotateZ(thetaZ)
 {
     kd[0] = 0.780392; kd[1] = 0.568627; kd[2] = 0.113725;
     ka[0] = 0.329412; ka[1] = 0.223529; ka[2] = 0.027451;
@@ -29,8 +32,6 @@ Cylinder::Cylinder(ShaderIF* sIF, double h, double r, double x, double y, double
     maxZ = shift.z+maxMod;
 
     topNormal = cryph::AffVector::yu;
-    botNormal = -cryph::AffVector::yu;
-
     defineCylinder();
 }
 
@@ -40,8 +41,8 @@ Cylinder::~Cylinder()
     glDeleteVertexArrays(1, vao);
 }
 
-const int N_POINTS_AROUND_SLICE = 18; // number points around a cross-section
 
+const int N_POINTS_AROUND_SLICE = 18; // number points around a cross-section
 
 void Cylinder::defineCylinder()
 {
@@ -57,11 +58,7 @@ void Cylinder::defineCylinder()
     const double yTop = 1 * mScaleHeight;
     const double yBot = -1 * mScaleHeight;
 
-    topNormal = cryph::Matrix3x3::xRotationDegrees(mRotateX)*topNormal;
-    topNormal = cryph::Matrix3x3::xRotationDegrees(mRotateX)*topNormal;
-    topNormal = cryph::Matrix3x3::xRotationDegrees(mRotateX)*topNormal;
-
-    botNormal = -topNormal;
+    topNormal = cryph::Matrix3x3::zRotationDegrees(mRotateZ) * cryph::Matrix3x3::yRotationDegrees(mRotateY) * cryph::Matrix3x3::xRotationDegrees(mRotateX) * topNormal;
 
     // EXERCISE: Use cryph to generalize this to define a cylinder in
     //           an arbitrary position and orientation.
@@ -76,25 +73,17 @@ void Cylinder::defineCylinder()
         double dx = cos(theta);
         double dz = sin(theta);
 
-        //rotate around origin
+        //Scale
         p1.assign(r*dx, yBot,r*dz);
-        p1=  cryph::Matrix3x3::xRotationDegrees(mRotateX) * p1;
-        p1=  cryph::Matrix3x3::yRotationDegrees(mRotateY) * p1;
-        p1=  cryph::Matrix3x3::zRotationDegrees(mRotateZ) * p1;
+        //rotate around origin
+        p1=  cryph::Matrix3x3::zRotationDegrees(mRotateZ) * cryph::Matrix3x3::yRotationDegrees(mRotateY) * cryph::Matrix3x3::xRotationDegrees(mRotateX) * p1;
 
         p2.assign(r*dx, yTop, r*dz);
-        p2=  cryph::Matrix3x3::xRotationDegrees(mRotateX) * p2;
-        p2=  cryph::Matrix3x3::yRotationDegrees(mRotateY) * p2;
-        p2=  cryph::Matrix3x3::zRotationDegrees(mRotateZ) * p2;
-
+        p2=  cryph::Matrix3x3::zRotationDegrees(mRotateZ) * cryph::Matrix3x3::yRotationDegrees(mRotateY) * cryph::Matrix3x3::xRotationDegrees(mRotateX) * p2;
         v1.assign(dx, 0.0, dz);
-        v1=  cryph::Matrix3x3::xRotationDegrees(mRotateX) * v1;
-        v1=  cryph::Matrix3x3::yRotationDegrees(mRotateY) * v1;
-        v1=  cryph::Matrix3x3::zRotationDegrees(mRotateZ) * v1;
+        v1=  cryph::Matrix3x3::zRotationDegrees(mRotateZ) * cryph::Matrix3x3::yRotationDegrees(mRotateY) * cryph::Matrix3x3::xRotationDegrees(mRotateX) * v1;
         v2.assign(dx, 0.0, dz);
-        v2=  cryph::Matrix3x3::xRotationDegrees(mRotateX) * v2;
-        v2=  cryph::Matrix3x3::yRotationDegrees(mRotateY) * v2;
-        v2=  cryph::Matrix3x3::zRotationDegrees(mRotateZ) * v2;
+        v2=  cryph::Matrix3x3::zRotationDegrees(mRotateZ) * cryph::Matrix3x3::yRotationDegrees(mRotateY) * cryph::Matrix3x3::xRotationDegrees(mRotateX) * v2;
 
 
         //translate
@@ -102,6 +91,7 @@ void Cylinder::defineCylinder()
         p2+=shift;
 
 
+        //copy it into arrays
         normals[BOTTOM][0] = v1.dx;
         normals[BOTTOM][1] = v1.dy;
         normals[BOTTOM][2] = v1.dz;
@@ -109,15 +99,12 @@ void Cylinder::defineCylinder()
         normals[TOP][1] = v2.dy;
         normals[TOP][2] = v2.dz;
 
-
         coords[BOTTOM][0] = p1.x;
         coords[BOTTOM][1] = p1.y;
         coords[BOTTOM][2] = p1.z;
         coords[TOP][0] = p2.x;
         coords[TOP][1] = p2.y;
         coords[TOP][2] = p2.z;
-
-
     }
 
     // center point of top and bottom
@@ -187,10 +174,10 @@ void Cylinder::render()
     //handle cylinder caps
     glDisableVertexAttribArray(shaderIF->pvaLoc("mcNormal"));
 
-    glVertexAttrib3f(shaderIF->pvaLoc("mcNormal"), botNormal.dx, botNormal.dy, botNormal.dz);
+    glVertexAttrib3f(shaderIF->pvaLoc("mcNormal"), topNormal.dx, topNormal.dy, topNormal.dz);
     glDrawElements(GL_TRIANGLE_FAN, 20, GL_UNSIGNED_INT, &indices[0]);
 
-    glVertexAttrib3f(shaderIF->pvaLoc("mcNormal"), topNormal.dx, topNormal.dy, topNormal.dz);
+    glVertexAttrib3f(shaderIF->pvaLoc("mcNormal"), -topNormal.dx, -topNormal.dy, -topNormal.dz);
     glDrawElements(GL_TRIANGLE_FAN, 20, GL_UNSIGNED_INT, &indices[1]);
 
     glEnableVertexAttribArray(shaderIF->pvaLoc("mcNormal"));

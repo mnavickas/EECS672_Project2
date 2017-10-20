@@ -1,8 +1,5 @@
 // RectangularPrism.c++
 
-#include <iostream>
-#include <math.h>
-
 #include "RectangularPrism.h"
 
 // index lists for the three faces that can't be drawn with glDrawArrays
@@ -12,8 +9,8 @@ GLuint RectangularPrism::indexList[3][4] = {
     { 1, 7, 3, 5 }  // ymax face
 };
 
-RectangularPrism::RectangularPrism(ShaderIF* sIF, float scaleX, float scaleY, float scaleZ, float dx, float dy, float dz) :
-    shaderIF(sIF)
+RectangularPrism::RectangularPrism(ShaderIF* sIF, float scaleX, float scaleY, float scaleZ, float dx, float dy, float dz)
+    : MyView(sIF)
 {
     xmin = -0.5*scaleX + dx;
     xmax = 0.5*scaleX +dx;

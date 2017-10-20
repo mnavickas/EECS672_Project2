@@ -1,12 +1,9 @@
 // Floor.c++
 
-#include <iostream>
-#include <math.h>
-
 #include "Floor.h"
 
-Floor::Floor(ShaderIF* sIF) :
-    shaderIF(sIF)
+Floor::Floor(ShaderIF* sIF)
+    : MyView(sIF)
 {
     xmin = -15;
     xmax = 70;
