@@ -12,11 +12,11 @@
 class Fireplace : public MyContainer
 {
 public:
-	Fireplace(	ShaderIF* shaderIF,
+    Fireplace(	ShaderIF* shaderIF,
             float dx = 0,
             float dy = 0,
             float dz = 0
-			);
+    );
 
 private:
     ShaderIF* shaderIF;

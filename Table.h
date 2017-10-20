@@ -9,7 +9,7 @@
 class Table : public MyContainer
 {
 public:
-	Table(	ShaderIF* shaderIF,
+    Table(	ShaderIF* shaderIF,
             float dx = 0,
             float dy = 0,
             float dz = 0,

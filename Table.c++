@@ -9,7 +9,7 @@
 #include <string.h>
 
 Table::Table(ShaderIF* sIF, float dx, float dy, float dz, float height, float width, float length) :
-	shaderIF(sIF)
+    shaderIF(sIF)
 {
     int tableWidth = 10*width;
     int tableLength =10*length;

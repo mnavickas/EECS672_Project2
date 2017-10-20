@@ -11,22 +11,22 @@
 class Floor : public MyView
 {
 public:
-	Floor(ShaderIF* sIF);
-	virtual ~Floor();
+    Floor(ShaderIF* sIF);
+    virtual ~Floor();
 
-	// xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
-	void getMCBoundingBox(double* xyzLimits) const;
-	bool handleCommand(unsigned char anASCIIChar, double ldsX, double ldsY);
-	void render();
+    // xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
+    void getMCBoundingBox(double* xyzLimits) const;
+    bool handleCommand(unsigned char anASCIIChar, double ldsX, double ldsY);
+    void render();
 private:
-	ShaderIF* shaderIF;
-	GLuint vao[1];
-	GLuint vbo[1];
+    ShaderIF* shaderIF;
+    GLuint vao[1];
+    GLuint vbo[1];
 
-	float xmin, xmax, ymin, ymax, zmin, zmax;
+    float xmin, xmax, ymin, ymax, zmin, zmax;
 
-	void defineFloor();
-	void renderFloor();
+    void defineFloor();
+    void renderFloor();
 };
 
 #endif

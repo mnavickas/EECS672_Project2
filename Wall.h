@@ -11,25 +11,25 @@
 class Wall : public MyView
 {
 public:
-	Wall(ShaderIF* sIF, float dx, float dy, float dz);
-	virtual ~Wall();
+    Wall(ShaderIF* sIF, float dx, float dy, float dz);
+    virtual ~Wall();
 
-	// xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
-	void getMCBoundingBox(double* xyzLimits) const;
-	bool handleCommand(unsigned char anASCIIChar, double ldsX, double ldsY);
-	void render();
+    // xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
+    void getMCBoundingBox(double* xyzLimits) const;
+    bool handleCommand(unsigned char anASCIIChar, double ldsX, double ldsY);
+    void render();
 private:
-	ShaderIF* shaderIF;
-	GLuint vao[1];
-	GLuint vbo[1];
+    ShaderIF* shaderIF;
+    GLuint vao[1];
+    GLuint vbo[1];
 
-	float xmin, xmax, ymin, ymax, zmin, zmax;
+    float xmin, xmax, ymin, ymax, zmin, zmax;
 
-	float dx, dy, dz;
-	static GLuint indexList[4][7];
+    float dx, dy, dz;
+    static GLuint indexList[4][7];
 
-	void defineWall();
-	void renderWall();
+    void defineWall();
+    void renderWall();
 };
 
 #endif
