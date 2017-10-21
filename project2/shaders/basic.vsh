@@ -37,8 +37,12 @@ out PVA
 	vec3 ecUnitNormal;
 } pvaOut;
 
+in vec3 vertexColor;
+out vec3 colorToFS;
+
 void main ()
 {
+	colorToFS = vertexColor;
 	// convert current vertex and its associated normal to eye coordinates
 	vec4 p_ecPosition = mc_ec * vec4(mcPosition, 1.0);
 	pvaOut.ecPosition = p_ecPosition.xyz/p_ecPosition.w;

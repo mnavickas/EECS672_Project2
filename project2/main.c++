@@ -10,6 +10,7 @@
 #include "Table.h"
 #include "Floor.h"
 #include "Fireplace.h"
+#include "RandomPLAComponent.h"
 
 void set3DViewingInformation(double xyz[6])
 {
@@ -88,6 +89,7 @@ int main(int argc, char* argv[])
     ShaderIF* sIF = new ShaderIF("shaders/basic.vsh", "shaders/phong.fsh");
 
     //first bed
+
     c.addModel(new Bed(sIF));
 
     //second (closer) bed
@@ -108,6 +110,11 @@ int main(int argc, char* argv[])
     c.addModel(new Fireplace(sIF,70));
     c.addModel(new Fireplace(sIF,69.5,0,-30));
 
+    int x = -15;
+    float y = 37.7;
+    c.addModel(new RandomPLAComponent(sIF,x,y, -49));
+    c.addModel(new RandomPLAComponent(sIF,x+30,y, -49));
+    c.addModel(new RandomPLAComponent(sIF,x+60,y, -49,2));
 
     glClearColor(1.0, 1.0, 1.0, 1.0);
 
@@ -116,6 +123,7 @@ int main(int argc, char* argv[])
     set3DViewingInformation(xyz);
 
     c.run();
+
 
     delete sIF;
 

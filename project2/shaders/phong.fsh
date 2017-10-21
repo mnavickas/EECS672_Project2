@@ -17,12 +17,22 @@ uniform vec3 ka = vec3(0.5, 0.5, 0.5); //default
 vec3 globalAmbient = vec3(0.1, 0.1, 0.1);
 vec3 lightStrength = vec3(0.9, 0.9, 0.9);
 
-vec4 p_ecLightSourcePos = vec4( 0,0,1,0); //directional light source
+vec4 p_ecLightSourcePos = vec4( 0.1,0,1,0); //directional light source
+
+uniform int usePVAcolor = 0;
+in vec3 colorToFS;
 
 vec4 evaluateLightingModel()
 {
+	vec3 ambient = ka;
+	vec3 diffuse = kd;
+	if( usePVAcolor == 1)
+	{
+		diffuse = colorToFS;
+		ambient = colorToFS;
+	}
 
-	vec3 ambientPart = ka * globalAmbient;
+	vec3 ambientPart = ambient * globalAmbient;
 
 
 	vec3 liHat;
@@ -43,7 +53,7 @@ vec4 evaluateLightingModel()
 	vec3 diffusePart;
 	if( dot(norm, p_ecLightSourcePos.xyz) >= 0 ) // only light it if it is on the same side.
 	{
-		diffusePart = lightStrength * kd * dot(normalize( norm ),liHat);
+		diffusePart = lightStrength * diffuse * dot(normalize( norm ),liHat);
 	}
 	else
 	{
